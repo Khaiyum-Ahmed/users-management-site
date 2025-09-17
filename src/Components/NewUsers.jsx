@@ -1,5 +1,42 @@
+import Swal from "sweetalert2";
 
 const NewUsers = () => {
+
+    const handleNewUsers = e => {
+        e.preventDefault();
+        const form = e.target;
+        const name = form.name.value;
+        const email = form.email.value;
+        const gender = form.gender.value;
+        const status = form.status.value;
+        const usersData = { name, email, gender, status }
+        console.log(usersData)
+
+        // data send the server 
+        fetch('http://localhost:5000/users', {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(usersData)
+        })
+            .then(res => res.json())
+            .then(data => {
+                
+                if (data.insertedId) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Your work has been saved",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    form.reset();
+                }
+
+            })
+
+    }
 
     return (
         <div>
@@ -7,13 +44,13 @@ const NewUsers = () => {
             <div className="hero">
                 <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                     <div className="card-body">
-                        <form >
+                        <form onSubmit={handleNewUsers}>
                             <fieldset className="fieldset">
                                 <label className="label">Name</label>
-                                <input type="text" name="name" className="input" placeholder="Email" />
+                                <input type="text" name="name" className="input" placeholder="Name" />
 
                                 <label className="label">Email</label>
-                                <input type="password" name="email" className="input" placeholder="Password" />
+                                <input type="email" name="email" className="input" placeholder="Email" />
 
                                 <div className="my-3 font-semibold">
                                     <label className="label mr-4">Gender</label>
